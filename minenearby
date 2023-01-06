@@ -1,0 +1,20 @@
+while getgenv().autoMineNearbyRocks == true do
+	task.wait(0.1)
+	local closestRock = nil
+
+	for _, rock in pairs(workspace.worldResources.mineable:GetDescendants()) do
+		if rock:IsA("Model") then
+			if rock.PrimaryPart ~= nil then
+				if closestRock == nil then
+					closestRock = rock
+				else
+					if (game.Players.LocalPlayer.Character.PrimaryPart.Position - rock.PrimaryPart.Position).magnitude < (closestRock.PrimaryPart.Position - game.Players.LocalPlayer.Character.PrimaryPart.Position).magnitude then
+						closestRock = rock
+					end
+				end
+			end
+		end
+	end
+
+	game:GetService("ReplicatedStorage").remoteInterface.interactions.mine:FireServer(tonumber(getgenv().pickaxeSlot), closestRock, game.Players.LocalPlayer.Character.PrimaryPart.CFrame)
+end
