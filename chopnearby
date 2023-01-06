@@ -1,0 +1,20 @@
+while getgenv().autoChopNearbyTrees == true do
+	task.wait(0.1)
+	local closestTree = nil
+
+	for _, tree in pairs(workspace.worldResources.choppable:GetDescendants()) do
+	    if tree:IsA("Model") then
+    		if tree.PrimaryPart ~= nil then
+    			if closestTree == nil then
+    				closestTree = tree
+    			else
+    				if (game.Players.LocalPlayer.Character.PrimaryPart.Position - tree.PrimaryPart.Position).magnitude < (closestTree.PrimaryPart.Position - game.Players.LocalPlayer.Character.PrimaryPart.Position).magnitude then
+    					closestTree = tree
+    				end
+    			end
+    		end
+		end
+	end
+
+	game:GetService("ReplicatedStorage").remoteInterface.interactions.chop:FireServer(tonumber(getgenv().axeSlot), closestTree, game.Players.LocalPlayer.Character.PrimaryPart.CFrame)
+end
