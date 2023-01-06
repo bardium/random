@@ -1,0 +1,20 @@
+while getgenv().autoKillNearby == true do
+	task.wait(0.1)
+	local closestAnimal = nil
+
+	for _, animal in pairs(workspace.animals:GetChildren()) do
+		if animal:IsA("Model") then
+			if animal.PrimaryPart ~= nil then
+				if closestAnimal == nil then
+					closestAnimal = animal
+				else
+					if (game.Players.LocalPlayer.Character.PrimaryPart.Position - animal.PrimaryPart.Position).magnitude < (closestAnimal.PrimaryPart.Position - game.Players.LocalPlayer.Character.PrimaryPart.Position).magnitude then
+						closestAnimal = animal
+					end
+				end
+			end
+		end
+	end
+
+	game:GetService("ReplicatedStorage").remoteInterface.interactions.meleeAnimal:FireServer(tonumber(getgenv().swordSlot), closestAnimal)
+end
