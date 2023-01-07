@@ -1,0 +1,20 @@
+while getgenv().autoBreakNearbyStructures == true do
+	task.wait(0.1)
+	local closestStructure = nil
+
+	for _, structure in pairs(workspace.placedStructures:GetDescendants()) do
+		if structure:IsA("Model") then
+			if structure.PrimaryPart ~= nil then
+				if closestStructure == nil then
+					closestStructure = structure
+				else
+					if (game.Players.LocalPlayer.Character.PrimaryPart.Position - structure.PrimaryPart.Position).magnitude < (closestStructure.PrimaryPart.Position - game.Players.LocalPlayer.Character.PrimaryPart.Position).magnitude then
+						closestStructure = structure
+					end
+				end
+			end
+		end
+	end
+    game:GetService("ReplicatedStorage").remoteInterface.interactions.hitStructure:FireServer(tonumber(getgenv().swordSlot), closestStructure, game.Players.LocalPlayer.Character.PrimaryPart.CFrame)
+	game:GetService("ReplicatedStorage").remoteInterface.interactions.hitStructure:FireServer(tonumber(getgenv().axeSlot), closestStructure, game.Players.LocalPlayer.Character.PrimaryPart.CFrame)
+end
