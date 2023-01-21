@@ -150,13 +150,13 @@ end
 
 --Function to fix slider
 local sliderInProgress = false;
-local function slider(value, whichSlider)
+local function slider(Value, whichSlider)
 	if sliderInProgress then
 		return
 	end
 	sliderInProgress = true
 	task.wait(5)
-	if getgenv().oldTestingVersionSettings[whichSlider] == value then
+	if getgenv().oldTestingVersionSettings[whichSlider] == Value then
 		saveoldTestingVersionSettings()
 		sliderInProgress = false;
 		if whichSlider == "serverHopDelay" then
@@ -701,25 +701,14 @@ end
 if getgenv().oldTestingVersionSettings.autoBeg then
 	spamming = task.spawn(begging)
 end
-local RaisedC = Players.LocalPlayer.leaderstats.Raised.value
+local RaisedC = Players.LocalPlayer.leaderstats.Raised.Value
+local JumpedC = RaisedC
 Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 	hopSet()
-	if getgenv().oldTestingVersionSettings.webhookToggle and getgenv().oldTestingVersionSettings.webhookBox then
-		local LogService = game:GetService("LogService")
-		local logs = LogService:GetLogHistory()
-		--Tries to grabs donation message from logs
-		if string.find(logs[#logs].message, Players.LocalPlayer.DisplayName) then
-			webhook(tostring(logs[#logs].message.. " (Total: ".. Players.LocalPlayer.leaderstats.Raised.value.. ")"))
-		else
-			webhook(tostring("💰 Somebody tipped ".. Players.LocalPlayer.leaderstats.Raised.value - RaisedC.. " Robux to ".. Players.LocalPlayer.DisplayName.. " (Total: " .. Players.LocalPlayer.leaderstats.Raised.value.. ")"))
-		end
-	end
-
-	--serverWebhook("Someone using one of thee free PLS Donate scripts earned: "..tostring(Players.LocalPlayer.leaderstats.Raised.value - RaisedC).." robux!")
 	if getgenv().oldTestingVersionSettings.autoJump then
 		task.spawn(function()
 			task.wait(getgenv().oldTestingVersionSettings.thanksDelay)
-			for i = 1, tonumber(Players.LocalPlayer.leaderstats.Raised.value - RaisedC), 1 do
+			for i = 1, tonumber(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC), 1 do
 				if game.Players.LocalPlayer.Character ~= nil then
 					if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 						game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.Y + 60, game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.Z)
@@ -731,12 +720,25 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 				end
 			end
 			task.wait(1.25)
-			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.value - RaisedC).." jumps!","All")
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!","All")
 			if getgenv().oldTestingVersionSettings.webhookToggle and getgenv().oldTestingVersionSettings.webhookBox then
-				webhook("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.value - RaisedC).." jumps!")
+				webhook("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!")
 			end
 		end)
 	end
+
+	if getgenv().oldTestingVersionSettings.webhookToggle and getgenv().oldTestingVersionSettings.webhookBox then
+		local LogService = game:GetService("LogService")
+		local logs = LogService:GetLogHistory()
+		--Tries to grabs donation message from logs
+		if string.find(logs[#logs].message, Players.LocalPlayer.DisplayName) then
+			webhook(tostring(logs[#logs].message.. " (Total: ".. Players.LocalPlayer.leaderstats.Raised.Value.. ")"))
+		else
+			webhook(tostring("💰 Somebody tipped ".. Players.LocalPlayer.leaderstats.Raised.Value - RaisedC.. " Robux to ".. Players.LocalPlayer.DisplayName.. " (Total: " .. Players.LocalPlayer.leaderstats.Raised.Value.. ")"))
+		end
+	end
+
+	--serverWebhook("Someone using one of thee free PLS Donate scripts earned: "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - RaisedC).." robux!")
 
 	if getgenv().oldTestingVersionSettings.autoThanks then
 		task.spawn(function()
@@ -744,7 +746,7 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(getgenv().oldTestingVersionSettings.thanksMessage[math.random(#getgenv().oldTestingVersionSettings.thanksMessage)],"All")
 		end)
 	end
-	RaisedC = Players.LocalPlayer.leaderstats.Raised.value
+	RaisedC = Players.LocalPlayer.leaderstats.Raised.Value
 	task.wait(getgenv().oldTestingVersionSettings.textUpdateDelay)
 	update()
 end)
