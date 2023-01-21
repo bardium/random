@@ -92,8 +92,8 @@ if isfile("plsdonateupdatedversion.txt") then
 	end
 
 end
-local sNames = {"textUpdateToggle", "textUpdateDelay", "serverHopToggle", "serverHopDelay", "hexBox", "goalBox", "webhookToggle", "webhookBox", "danceChoice", "thanksMessage", "signToggle", "customBoothText", "signUpdateToggle", "signText", "signHexBox", "autoThanks", "autoBeg", "begMessage", "begDelay", "fpsLimit", "render", "thanksDelay", "vcServer", "censorHop", "autoJump", "autoDie", "deathDelay"}
-local sValues = {true, 30, true, 30, "#32CD32", 5, false, "", "Disabled", {"Thank you", "Thanks!", "ty :)", "tysm!"}, false, "WEEKLY GOAL: $C / $G", false, "your text here", "#ffffff", true, false, {"Please donate", "I'm so close to my goal!", "donate to me", "please"}, 300, 60, false, 3, false, false, false, false, 5}
+local sNames = {"textUpdateToggle", "textUpdateDelay", "serverHopToggle", "serverHopDelay", "hexBox", "goalBox", "webhookToggle", "webhookBox", "danceChoice", "thanksMessage", "signToggle", "customBoothText", "signUpdateToggle", "signText", "signHexBox", "autoThanks", "autoBeg", "begMessage", "begDelay", "fpsLimit", "render", "thanksDelay", "vcServer", "censorHop", "autoJump", "autoDie", "deathDelay", "autoJumpWebhooks"}
+local sValues = {true, 30, true, 30, "#32CD32", 5, false, "", "Disabled", {"Thank you", "Thanks!", "ty :)", "tysm!"}, false, "WEEKLY GOAL: $C / $G", false, "your text here", "#ffffff", true, false, {"Please donate", "I'm so close to my goal!", "donate to me", "please"}, 300, 60, false, 3, false, false, false, false, 5, false}
 if #getgenv().updatedVersionSettings ~= sNames then
 	for i, v in ipairs(sNames) do
 		if getgenv().updatedVersionSettings[v] == nil then
@@ -426,6 +426,12 @@ local autoJump = chatTab:AddSwitch("Auto Jump Per Robux", function(bool)
 end)
 autoJump:Set(getgenv().updatedVersionSettings.autoJump)
 
+local autoJumpWebhooks = chatTab:AddSwitch("Auto Jump Webhooks", function(bool)
+	getgenv().updatedVersionSettings.autoJumpWebhooks = bool
+	saveupdatedVersionSettings()
+end)
+autoJumpWebhooks:Set(getgenv().updatedVersionSettings.autoJumpWebhooks)
+
 local autoDie = chatTab:AddSwitch("Auto Die On Donation", function(bool)
 	getgenv().updatedVersionSettings.autoDie = bool
 	saveupdatedVersionSettings()
@@ -733,7 +739,7 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(getgenv().updatedVersionSettings.thanksMessage[math.random(#getgenv().updatedVersionSettings.thanksMessage)],"All")
 		end)
 	end
-	
+
 	if getgenv().updatedVersionSettings.autoJump then
 		task.spawn(function()
 			task.wait(getgenv().updatedVersionSettings.thanksDelay)
@@ -742,7 +748,7 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 					if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 						game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.X, game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.Y + 60, game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.Z)
 						task.wait(.75)
-						if getgenv().updatedVersionSettings.webhookToggle and getgenv().updatedVersionSettings.webhookBox then
+						if getgenv().updatedVersionSettings.webhookToggle and getgenv().updatedVersionSettings.webhookBox and getgenv().updatedVersionSettings.autoJumpWebhooks then
 							webhook("Current jump count: "..i)
 						end
 					end	
@@ -750,7 +756,7 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 			end
 			task.wait(1.25)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!","All")
-			if getgenv().updatedVersionSettings.webhookToggle and getgenv().updatedVersionSettings.webhookBox then
+			if getgenv().updatedVersionSettings.webhookToggle and getgenv().updatedVersionSettings.webhookBox and getgenv().updatedVersionSettings.autoJumpWebhooks then
 				webhook("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!")
 			end
 			task.wait(.5)
@@ -762,7 +768,7 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 			end
 		end)
 	end
-	
+
 
 	if getgenv().updatedVersionSettings.webhookToggle and getgenv().updatedVersionSettings.webhookBox then
 		local LogService = game:GetService("LogService")
@@ -776,14 +782,14 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 	end
 
 	--serverWebhook("Someone using one of thee free PLS Donate scripts earned: "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - RaisedC).." robux!")
-	
+
 	if getgenv().updatedVersionSettings.autoDie and not getgenv().updatedVersionSettings.autoJump then
 		task.wait(getgenv().updatedVersionSettings.deathDelay)
 		if game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid", true) then
 			game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid", true).Health = 0
 		end
 	end
-	
+
 	RaisedC = Players.LocalPlayer.leaderstats.Raised.Value
 	task.wait(getgenv().updatedVersionSettings.textUpdateDelay)
 	update()
