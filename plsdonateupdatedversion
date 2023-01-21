@@ -727,6 +727,13 @@ local RaisedC = Players.LocalPlayer.leaderstats.Raised.Value
 local JumpedC = RaisedC
 Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 	hopSet()
+	if getgenv().updatedVersionSettings.autoThanks then
+		task.spawn(function()
+			task.wait(getgenv().updatedVersionSettings.thanksDelay)
+			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(getgenv().updatedVersionSettings.thanksMessage[math.random(#getgenv().updatedVersionSettings.thanksMessage)],"All")
+		end)
+	end
+	
 	if getgenv().updatedVersionSettings.autoJump then
 		task.spawn(function()
 			task.wait(getgenv().updatedVersionSettings.thanksDelay)
@@ -746,6 +753,13 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 			if getgenv().updatedVersionSettings.webhookToggle and getgenv().updatedVersionSettings.webhookBox then
 				webhook("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!")
 			end
+			task.wait(.5)
+			if getgenv().updatedVersionSettings.autoDie and getgenv().updatedVersionSettings.autoJump then
+				task.wait(getgenv().updatedVersionSettings.deathDelay)
+				if game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid", true) then
+					game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid", true).Health = 0
+				end
+			end
 		end)
 	end
 	
@@ -762,15 +776,8 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 	end
 
 	--serverWebhook("Someone using one of thee free PLS Donate scripts earned: "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - RaisedC).." robux!")
-
-	if getgenv().updatedVersionSettings.autoThanks then
-		task.spawn(function()
-			task.wait(getgenv().updatedVersionSettings.thanksDelay)
-			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(getgenv().updatedVersionSettings.thanksMessage[math.random(#getgenv().updatedVersionSettings.thanksMessage)],"All")
-		end)
-	end
 	
-	if getgenv().updatedVersionSettings.autoDie then
+	if getgenv().updatedVersionSettings.autoDie and not getgenv().updatedVersionSettings.autoJump then
 		task.wait(getgenv().updatedVersionSettings.deathDelay)
 		if game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid", true) then
 			game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid", true).Health = 0
