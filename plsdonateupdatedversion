@@ -731,7 +731,7 @@ if getgenv().updatedVersionSettings.autoBeg then
 end
 local RaisedC = Players.LocalPlayer.leaderstats.Raised.Value
 local JumpedC = RaisedC
-Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
+Players.LocalPlayer.leaderstats.Raised:GetPropertyChangedSignal("Value"):Connect(function()
 	hopSet()
 	if getgenv().updatedVersionSettings.autoThanks then
 		task.spawn(function()
@@ -743,6 +743,7 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 	if getgenv().updatedVersionSettings.autoJump then
 		task.spawn(function()
 			task.wait(getgenv().updatedVersionSettings.thanksDelay)
+			print(Players.LocalPlayer.leaderstats.Raised.Value, JumpedC, Players.LocalPlayer.leaderstats.Raised.Value - JumpedC)
 			for i = 1, tonumber(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC), 1 do
 				if game.Players.LocalPlayer.Character ~= nil then
 					if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
@@ -756,6 +757,7 @@ Players.LocalPlayer.leaderstats.Raised.Changed:Connect(function()
 			end
 			task.wait(1.25)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!","All")
+			JumpedC = Players.LocalPlayer.leaderstats.Raised.Value
 			if getgenv().updatedVersionSettings.webhookToggle and getgenv().updatedVersionSettings.webhookBox and getgenv().updatedVersionSettings.autoJumpWebhooks then
 				webhook("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!")
 			end
