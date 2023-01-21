@@ -757,10 +757,10 @@ Players.LocalPlayer.leaderstats.Raised:GetPropertyChangedSignal("Value"):Connect
 			end
 			task.wait(1.25)
 			game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!","All")
-			JumpedC = Players.LocalPlayer.leaderstats.Raised.Value
 			if getgenv().updatedVersionSettings.webhookToggle and getgenv().updatedVersionSettings.webhookBox and getgenv().updatedVersionSettings.autoJumpWebhooks then
 				webhook("Completed "..tostring(Players.LocalPlayer.leaderstats.Raised.Value - JumpedC).." jumps!")
 			end
+			JumpedC = Players.LocalPlayer.leaderstats.Raised.Value
 			task.wait(.5)
 			if getgenv().updatedVersionSettings.autoDie and getgenv().updatedVersionSettings.autoJump then
 				task.wait(getgenv().updatedVersionSettings.deathDelay)
