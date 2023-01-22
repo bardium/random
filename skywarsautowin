@@ -219,7 +219,7 @@ repeat
 until IsAlive(localPlayer)
 local F = tick()
 notify("Autowin Started", "Made by Fern#5747 v" .. autoWinVersion)
-queueonteleport("https://raw.githubusercontent.com/bardium/random/main/skywarsautowin")
+queueonteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/bardium/random/main/skywarsautowin'))()")
 local C = 0
 repeat
 	if workspace.BlockContainer.Map.Chests:FindFirstChild("ChestTierFour") then
