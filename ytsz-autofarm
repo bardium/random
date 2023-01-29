@@ -1,0 +1,233 @@
+task.spawn(function()
+	getgenv().autoYSZFarm = false
+	local Player = game.Players.LocalPlayer
+	local Character = Player.Character
+	local HRP = Character.PrimaryPart
+	local Humanoid = Character:FindFirstChildWhichIsA("Humanoid")
+	local PlayerGui = Player.PlayerGui
+	local ComputerGui = PlayerGui.Computer
+	local StudioItems = workspace.Studio.Items
+	local Houses = game:GetService("Workspace").Houses
+	local VIM = game:GetService('VirtualInputManager')
+
+	local thumbnailName
+	local length = math.random(5,10)
+	local array = {}
+	for i = 1, length do
+		array[i] = string.char(math.random(65, 90))
+	end
+	thumbnailName = table.concat(array)
+
+	local videoName
+	length = math.random(5,10)
+	array = {}
+	for i = 1, length do
+		array[i] = string.char(math.random(65, 90))
+	end
+	videoName = table.concat(array)
+
+	local function generateThumbnail()
+		game:GetService("ReplicatedStorage").Remotes.Events.ThumbnailStart:FireServer()
+		task.wait()
+		game:GetService("ReplicatedStorage").Remotes.Events.ThumbnailEnd:FireServer({["Color"] = tonumber(string.format("%.3f", math.random(100,600)*.001)), ["Pic"] = math.random(2, 7), ["Pose"] = math.random(3, 4), ["Arrow"] = math.random(1, 4)}, thumbnailName)
+	end
+
+	local function checkIfNoFootage()
+		if PlayerGui.MainMenu.C.C.UIGradient.Offset.X < 0.49 then
+			if StudioItems:FindFirstChildWhichIsA("Seat", true) then
+				task.wait(1)
+				Humanoid:ChangeState("Jumping")
+				task.wait(1)
+				if StudioItems:FindFirstChildWhichIsA("Seat", true) then
+					repeat
+						HRP.CFrame = game:GetService("Workspace").Studio.Door.W.CFrame
+						task.wait(0.1)
+					until not StudioItems:FindFirstChildWhichIsA("Seat", true) or not getgenv().autoYSZFarm
+				end
+			end
+			if not Character:FindFirstChild("Handle") then
+				repeat
+					VIM:SendKeyEvent(true, Enum.KeyCode.One, false, nil)
+					task.wait()
+					generateThumbnail()
+					task.wait()
+					VIM:SendKeyEvent(false, Enum.KeyCode.One, false, nil)
+					task.wait(0.1)
+				until Character:FindFirstChild("Handle") or not getgenv().autoYSZFarm
+			end
+			task.wait()
+			repeat
+				task.wait()
+				VIM:SendKeyEvent(true, Enum.KeyCode.E, false, nil)
+				task.wait()
+				generateThumbnail()
+				task.wait()
+				VIM:SendKeyEvent(false, Enum.KeyCode.E, false, nil)
+				task.wait()
+			until PlayerGui.MainMenu.C.C.UIGradient.Offset.X >= 0.49 or not getgenv().autoYSZFarm
+		end
+	end
+
+	local function enterHouse()
+		if not StudioItems:FindFirstChildWhichIsA("Seat", true) then
+			generateThumbnail()
+			task.wait()
+			game:GetService("ReplicatedStorage").Remotes.Events.Enter:FireServer("Other")
+			task.wait()
+			repeat
+				HRP.CFrame = Houses[Player.Name].Door.W.CFrame
+				task.wait(1)
+				Humanoid:ChangeState("Jumping")
+				task.wait(0.1)
+			until StudioItems:FindFirstChildWhichIsA("Seat", true) or not getgenv().autoYSZFarm
+		end
+	end
+
+	local function sitDown()
+		local Seat = StudioItems:FindFirstChildWhichIsA("Seat", true)
+		if Seat and Humanoid.Sit == false then
+			local Chair = Seat:FindFirstAncestorWhichIsA("Model")
+			for _, ChairInstance in ipairs(Chair:GetDescendants()) do
+				if ChairInstance:IsA("BasePart") then
+					ChairInstance.CanCollide = false
+				end
+			end
+			repeat
+				HRP.CFrame = CFrame.new(Seat.Position)
+				task.wait(1)
+				HRP.Velocity = Vector3.new(50, 50, 50)
+				task.wait(1)
+				HRP.Velocity = Vector3.new(-50, 50, -50)
+				task.wait()
+			until Humanoid.Sit == true or not getgenv().autoYSZFarm
+			for _, ChairInstance in ipairs(Chair:GetDescendants()) do
+				if ChairInstance:IsA("BasePart") then
+					ChairInstance.CanCollide = true
+				end
+			end
+		end
+	end
+
+	local function editVideo()
+		game:GetService("ReplicatedStorage").Remotes.Functions.BeginVIdeo:InvokeServer()
+		task.wait(.1)
+		local video = game.ReplicatedStorage.Remotes.Functions.BeginVIdeo:InvokeServer()
+		local videoLength = 0
+		local currentComputerSDPer = require(game.ReplicatedStorage.Modules.Formula).SDPerComputer(require(game.ReplicatedStorage.Modules.Computers)[require(game.ReplicatedStorage.Modules.CurrentComputer).Computer])
+		local SDestimation = require(game.ReplicatedStorage.Modules.SDEstimator).Amount
+		if videoLength < math.ceil(SDestimation / currentComputerSDPer) then
+			repeat
+				videoLength = videoLength + 1
+			until videoLength >= math.ceil(SDestimation / currentComputerSDPer)
+		end
+		local extends = {}
+		local originalExtend
+		if videoLength >= 20 then
+			originalExtend = game.ReplicatedStorage.Remotes.Functions.ExtendVideo:InvokeServer(video)
+			table.insert(extends, originalExtend)
+		end
+		if videoLength >= 40 then
+			for extend = 0, (math.floor(videoLength/20) - 1) do
+				table.insert(extends, game.ReplicatedStorage.Remotes.Functions.ExtendVideo:InvokeServer(video, extends[#extends]))
+				task.wait()
+			end
+		end
+		game.ReplicatedStorage.Remotes.Events.Export:FireServer(extends, video, videoLength, videoName)
+	end
+
+	local function uploadVideo()
+		game:GetService("ReplicatedStorage").Remotes.Events.Upload:FireServer(videoName, thumbnailName, videoName)
+	end
+
+	while task.wait() do
+		if getgenv().autoYSZFarm then
+			checkIfNoFootage()
+			task.wait()
+			enterHouse()
+			task.wait()
+			if ComputerGui.Frame.Visible == false then
+				repeat
+					task.wait(1)
+					Humanoid:ChangeState("Jumping")
+					task.wait(1)
+					sitDown()
+					task.wait()
+				until ComputerGui.Frame.Visible == true or not getgenv().autoYSZFarm
+			end
+			if ComputerGui.Frame.Visible == true then
+				task.wait()
+				editVideo()
+				task.wait()
+				uploadVideo()
+				task.wait(1)
+			end
+		end
+	end
+end)
+task.spawn(function()
+	getgenv().autoYSZFarm = false
+	local repo = 'https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/'
+
+	local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+
+	local Window = Library:CreateWindow({
+		Title = 'YouTube Simulator Z AutoFarm [discord.gg/hSm6DyF6X7]',
+		Center = true, 
+		AutoShow = true,
+	})
+
+	local Tabs = {
+		Main = Window:AddTab('Main'),
+	}
+
+	local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Credits: Goose Better#9356')
+
+	LeftGroupBox:AddLabel('Discord Server (Report Bugs):')
+	LeftGroupBox:AddLabel('discord.gg/hSm6DyF6X7')
+	LeftGroupBox:AddLabel('\n\Instructions\n\Step 1: Go in your house\n\Step 2: Go to your computer and sit down\n\Step 3: Go on YouTube and click upload. \n\Step 4: Activate the autofarm and enjoy!', true)
+	LeftGroupBox:AddLabel('\n\ ')
+	LeftGroupBox:AddToggle('autoYSZFarm', {
+		Text = 'YouTube Simulator Z AutoFarm',
+		Default = false,
+		Tooltip = 'Enable or disable the autofarm',
+	})
+	local firstChangeHappened = false
+	local notifDebounce = false
+	getgenv().disable = false
+	Toggles.autoYSZFarm:OnChanged(function()
+		if firstChangeHappened then
+			if require(game.ReplicatedStorage.Modules.OPOP).PEE == nil then
+				getgenv().autoYSZFarm = false
+				if not notifDebounce then
+					Library:Notify("Instructions were not completed!", 5)
+					notifDebounce = true
+				end
+				task.wait(.5)
+				getgenv().disable = true
+			else
+				getgenv().autoYSZFarm = Toggles.autoYSZFarm.Value
+				Library:Notify(Toggles.autoYSZFarm.Value == true and 'YouTube Simulator Z AutoFarm enabled!' or 'YouTube Simulator Z AutoFarm disabled!', 2)
+			end
+		end
+		firstChangeHappened = true
+	end)
+
+	LeftGroupBox:AddLabel('\n\ ')
+	LeftGroupBox:AddLabel('\n\ ')
+	LeftGroupBox:AddLabel('\n\ ')
+	LeftGroupBox:AddButton('Unload', function() Library:Unload() end)
+	Library:OnUnload(function()
+		print('Unloaded!')
+		getgenv().autoYSZFarm = false
+		Library.Unloaded = true
+	end)
+	while task.wait() do
+		if getgenv().disable then
+			Toggles.autoYSZFarm:SetValue(false)
+			task.wait()
+			getgenv().disable = false
+			task.wait()
+			notifDebounce = false
+		end
+	end
+end)
