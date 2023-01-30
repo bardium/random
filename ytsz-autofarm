@@ -72,10 +72,8 @@ task.spawn(function()
 		if not StudioItems:FindFirstChildWhichIsA("Seat", true) then
 			generateThumbnail()
 			task.wait()
-			game:GetService("ReplicatedStorage").Remotes.Events.Enter:FireServer("Other")
-			task.wait()
 			repeat
-				HRP.CFrame = Houses[Player.Name].Door.W.CFrame
+				game.ReplicatedStorage.Events._EnterHouse:Fire()
 				task.wait(1)
 				Humanoid:ChangeState("Jumping")
 				task.wait(0.1)
