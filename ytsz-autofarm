@@ -98,7 +98,7 @@ task.spawn(function()
 				HRP.Velocity = Vector3.new(50, 50, 50)
 				task.wait(1)
 				HRP.Velocity = Vector3.new(-50, 50, -50)
-				task.wait()
+				task.wait(1)
 			until Humanoid.Sit == true or not getgenv().autoYSZFarm
 			for _, ChairInstance in ipairs(Chair:GetDescendants()) do
 				if ChairInstance:IsA("BasePart") then
