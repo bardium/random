@@ -47,7 +47,7 @@ task.spawn(function()
 			end
 			if not Character:FindFirstChild("Handle") then
 				repeat
-                    require(game.ReplicatedStorage.Modules.Float).new(game.Players.LocalPlayer.PlayerGui.Camera.LocalScript.Parent.Fr.ImageButton):Click()
+					require(game.ReplicatedStorage.Modules.Float).new(game.Players.LocalPlayer.PlayerGui.Camera.LocalScript.Parent.Fr.ImageButton):Click()
 					task.wait(0.1)
 				until Character:FindFirstChild("Handle") or not getgenv().autoYSZFarm
 			end
@@ -178,7 +178,7 @@ task.spawn(function()
 
 	LeftGroupBox:AddLabel('Discord Server (Report Bugs):')
 	LeftGroupBox:AddLabel('discord.gg/hSm6DyF6X7')
-	LeftGroupBox:AddLabel('\n\Instructions\n\Step 1: Go in your house\n\Step 2: Go to your computer and sit down\n\Step 3: Go on YouTube and click upload. \n\Step 4: Activate the autofarm and enjoy!', true)
+	LeftGroupBox:AddLabel('\n\Instructions\n\Step 1: Record some footage, then go in your house\n\Step 2: Go to your computer and sit down, edit the video, and make a thumbnail\n\Step 3: Go on YouTube and click upload\n\Step 4: Upload a video\n\Step 5: Activate the autofarm and enjoy!', true)
 	LeftGroupBox:AddLabel('\n\ ')
 	LeftGroupBox:AddToggle('autoYSZFarm', {
 		Text = 'YouTube Simulator Z AutoFarm',
