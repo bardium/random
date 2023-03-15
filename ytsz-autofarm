@@ -47,12 +47,9 @@ task.spawn(function()
 			end
 			if not Character:FindFirstChild("Handle") then
 				repeat
-					task.wait()
-					VIM:SendKeyEvent(true, Enum.KeyCode.One, false, nil)
-					task.wait()
-					generateThumbnail()
-					task.wait()
-					VIM:SendKeyEvent(false, Enum.KeyCode.One, false, nil)
+					local CameraButton = game.Players.LocalPlayer.PlayerGui.Camera.LocalScript.Parent.Fr.ImageButton
+					VIM:SendMouseButtonEvent(CameraButton.AbsolutePosition.X+CameraButton.AbsoluteSize.X/2,CameraButton.AbsolutePosition.Y+50,0,true,CameraButton,1)
+					VIM:SendMouseButtonEvent(CameraButton.AbsolutePosition.X+CameraButton.AbsoluteSize.X/2,CameraButton.AbsolutePosition.Y+50,0,false,CameraButton,1)
 					task.wait(0.1)
 				until Character:FindFirstChild("Handle") or not getgenv().autoYSZFarm
 			end
