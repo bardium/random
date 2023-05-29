@@ -108,7 +108,7 @@ task.spawn(function()
 						ChairInstance.CanCollide = false
 					end
 				end
-				if setthreadcontext and getgenv then
+				if set_identity then
 					local replaceWithBest = nil
 					for _, v in ipairs(PlayerGui:GetChildren()) do
 						if v:IsA("BillboardGui") and v.Enabled == true and v.Name == "BillboardGui" and v:FindFirstChild("Frame") and v.Frame.Size == UDim2.new(1, 0, 1, 0) and v.Frame:FindFirstChild("ImageButton") and v.Frame.ImageButton:FindFirstChild("TextLabel") and string.lower(v.Frame.ImageButton.TextLabel.Text):match("replace with best") then
@@ -117,7 +117,7 @@ task.spawn(function()
 					end
 
 					if replaceWithBest ~= nil then
-						setthreadcontext(2)
+						set_identity(2)
 						require(game.ReplicatedStorage.Modules.Float).new(replaceWithBest):Click()
 					end
 				end
