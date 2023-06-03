@@ -58,7 +58,9 @@ local function checkIfNoFootage()
 			task.wait(1)
 			if StudioItems:FindFirstChildWhichIsA("Seat", true) then
 				repeat
-					HRP.CFrame = game:GetService("Workspace").Studio.Door.W.CFrame
+					if Studio:FindFirstChild("Door") then
+						HRP.CFrame = Studio.Door.W.CFrame
+					end
 					task.wait(0.1)
 				until not StudioItems:FindFirstChildWhichIsA("Seat", true) or not getgenv[autoFarmName]
 			end
