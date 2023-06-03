@@ -219,8 +219,6 @@ task.spawn(function()
 
 	LeftGroupBox:AddLabel('Discord Server (Report Bugs):')
 	LeftGroupBox:AddLabel('discord.gg/hSm6DyF6X7')
-	LeftGroupBox:AddLabel('\n\Instructions\n\Step 1: Record some footage, then go in your house\n\Step 2: Go to your computer and sit down, edit the video, and make a thumbnail\n\Step 3: Go on YouTube and click upload\n\Step 4: Upload a video\n\Step 5: Activate the autofarm and enjoy!', true)
-	LeftGroupBox:AddLabel('\n\ ')
 	LeftGroupBox:AddToggle('autoYTSZFarm', {
 		Text = 'YouTube Simulator Z AutoFarm',
 		Default = false,
@@ -236,17 +234,18 @@ task.spawn(function()
 				set_identity(7)
 			end
 			if require(game.ReplicatedStorage.Modules.OPOP).PEE == nil then
-				getgenv().autoYTSZFarm = false
-				if not notifDebounce then
-					Library:Notify("Instructions were not completed!", 5)
-					notifDebounce = true
-				end
-				task.wait(.5)
-				getgenv().disable = true
-			else
-				getgenv().autoYTSZFarm = Toggles.autoYTSZFarm.Value
-				Library:Notify(Toggles.autoYTSZFarm.Value == true and 'YouTube Simulator Z AutoFarm enabled!' or 'YouTube Simulator Z AutoFarm disabled!', 2)
+				local clamScript = game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("NewBideo"):WaitForChild("LocalScript")
+				local clam = clamScript.CLAM:Clone()
+				clam.N.Text = ""
+				require(game.ReplicatedStorage.Modules.OPOP).PEE = clam
+				require(game.ReplicatedStorage.Modules.OPOP).COPY = nil
+				require(game.ReplicatedStorage.Modules.OPOP).COPY = (function()
+					local clam = clamScript.CLAM:Clone()
+					clam.N.Text = ""
+				end)
 			end
+			getgenv().autoYTSZFarm = Toggles.autoYTSZFarm.Value
+			Library:Notify(Toggles.autoYTSZFarm.Value == true and 'YouTube Simulator Z AutoFarm enabled!' or 'YouTube Simulator Z AutoFarm disabled!', 2)
 		end
 		firstChangeHappened = true
 	end)
