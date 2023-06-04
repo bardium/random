@@ -301,6 +301,9 @@ task.spawn(function()
 	Library:OnUnload(function()
 		print('Unloaded!')
 		getgenv[autoFarmName] = false
+		if PlayerGui:FindFirstChild("editingVideoGui") then
+			PlayerGui:FindFirstChild("editingVideoGui"):Destroy()
+		end
 		Library.Unloaded = true
 	end)
 end)
