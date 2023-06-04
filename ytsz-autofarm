@@ -155,7 +155,7 @@ local function editVideo()
 		local video = game.ReplicatedStorage.Remotes.Functions.BeginVIdeo:InvokeServer()
 		local videoLength = 0
 		if set_identity then
-			set_identity(7)
+			set_identity(2)
 		end
 		local currentComptuer = require(game.ReplicatedStorage.Modules.Computers)[require(game.ReplicatedStorage.Modules.CurrentComputer).Computer]
 		local currentComputerSDPer = require(game.ReplicatedStorage.Modules.Formula).SDPerComputer(currentComptuer)
