@@ -150,6 +150,21 @@ end
 
 local function editVideo()
 	if getgenv[autoFarmName] then
+		local editingVideoGui
+		if not PlayerGui:FindFirstChild("editingVideoGui") then
+			editingVideoGui = Instance.new("ScreenGui", PlayerGui)
+			editingVideoGui.Name = "editingVideoGui"
+		else
+			editingVideoGui = PlayerGui:FindFirstChild("editingVideoGui")
+		end
+		local editingVideoTL = Instance.new("TextLabel", editingVideoGui)
+		editingVideoTL.Size = UDim2.new(0.25, 0, 0.075, 0)
+		editingVideoTL.AnchorPoint = Vector2.new(0.5, 0.5)
+		editingVideoTL.Position = UDim2.new(0.5, 0, 0.8, 0)
+		editingVideoTL.TextScaled = true
+		editingVideoTL.BackgroundTransparency = 0.5
+		editingVideoTL.BorderSizePixel = 0
+		editingVideoTL.Text = "Editing video."
 		game:GetService("ReplicatedStorage").Remotes.Functions.BeginVIdeo:InvokeServer()
 		task.wait(.1)
 		local video = game.ReplicatedStorage.Remotes.Functions.BeginVIdeo:InvokeServer()
@@ -169,18 +184,29 @@ local function editVideo()
 		end
 		local extends = {}
 		local originalExtend
-		print(videoLength)
+		if tostring((math.floor(videoLength/20))) ~= "0" then
+			editingVideoTL.Text = "Editing video. Progress: 0/" .. tostring((math.floor(videoLength/20)))
+		else
+			editingVideoTL.Text = "Editing video. Progress: 0/1"
+		end
 		if videoLength >= 20 then
 			originalExtend = game.ReplicatedStorage.Remotes.Functions.ExtendVideo:InvokeServer(video)
 			table.insert(extends, originalExtend)
 		end
+		editingVideoTL.Text = "Editing video. Progress: 1/" .. tostring((math.floor(videoLength/20)))
 		if videoLength >= 40 then
 			for extend = 0, (math.floor(videoLength/20) - 1) do
 				if getgenv[autoFarmName] then
 					table.insert(extends, game.ReplicatedStorage.Remotes.Functions.ExtendVideo:InvokeServer(video, extends[#extends]))
 					task.wait()
+					editingVideoTL.Text = "Editing video. Progress: " .. tostring(extend + 1) .. "/" .. tostring((math.floor(videoLength/20)))
 				end
 			end
+		end
+		if tostring((math.floor(videoLength/20))) ~= "0" then
+			editingVideoTL.Text = "Editing video. Progress: " .. tostring((math.floor(videoLength/20))) .. "/" .. tostring((math.floor(videoLength/20)))
+		else
+			editingVideoTL.Text = "Editing video. Progress: 1/1"
 		end
 		game.ReplicatedStorage.Remotes.Events.Export:FireServer(extends, video, videoLength, videoName)
 	end
@@ -200,7 +226,7 @@ task.spawn(function()
 					Humanoid:ChangeState("Jumping")
 					task.wait(1)
 					sitDown()
-					task.wait()
+					task.wait(.5)
 				until ComputerGui.Frame.Visible == true or not getgenv[autoFarmName]
 			end
 			if ComputerGui.Frame.Visible == true and getgenv[autoFarmName] then
@@ -209,6 +235,9 @@ task.spawn(function()
 				task.wait()
 				game:GetService("ReplicatedStorage").Remotes.Events.Upload:FireServer(videoName, thumbnailName, videoName)
 				task.wait(1)
+				if PlayerGui:FindFirstChild("editingVideoGui") then
+					PlayerGui:FindFirstChild("editingVideoGui"):Destroy()
+				end
 			end
 		end
 	end
@@ -263,11 +292,11 @@ task.spawn(function()
 		end
 		firstChangeHappened = true
 	end)
-	
+
 	for i = 0, 3 do 
 		LeftGroupBox:AddLabel('\n\ ')
 	end
-	
+
 	LeftGroupBox:AddButton('Unload', function() Library:Unload() end)
 	Library:OnUnload(function()
 		print('Unloaded!')
