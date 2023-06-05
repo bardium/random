@@ -58,9 +58,14 @@ local function checkIfNoFootage()
 			task.wait(1)
 			if StudioItems:FindFirstChildWhichIsA("Seat", true) then
 				repeat
-					if Studio:FindFirstChild("Door") then
-						HRP.CFrame = Studio.Door.W.CFrame
-					end
+                    if StudioItems:FindFirstChild("Shop Teleporter") then
+                        game.Players.LocalPlayer.Character:PivotTo(StudioItems:FindFirstChild("Shop Teleporter"):GetPivot() * CFrame.new(0, 7, 0))
+                        task.wait(.5)
+                    else
+                        if Studio:FindFirstChild("Door") then
+                            HRP.CFrame = Studio.Door.W.CFrame
+                        end
+                    end
 					task.wait(0.1)
 				until not StudioItems:FindFirstChildWhichIsA("Seat", true) or not getgenv[autoFarmName]
 			end
