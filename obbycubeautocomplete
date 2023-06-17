@@ -1,19 +1,26 @@
+shared.autoNullify = false
 while task.wait() do
-    for _, obbySection in ipairs(game:GetService("Workspace").Obbies:GetChildren()) do
-        if game.Players.LocalPlayer:GetAttribute("Difficulty") and (tostring(obbySection:GetAttribute("Difficulty")) == tostring(game.Players.LocalPlayer:GetAttribute("Difficulty"))) then
-            for _, checkpoint in ipairs(obbySection.CheckPoints:GetChildren()) do
-                print(#obbySection.CheckPoints:GetChildren())
-                local checkpointStage = tonumber(checkpoint:GetAttribute("Stage"))
-                
-                if tonumber(#obbySection.CheckPoints:GetChildren()) == tonumber(game.Players.LocalPlayer:GetAttribute("Stage")) then
-                    game.Players.LocalPlayer.Character:PivotTo(obbySection.LobbyPortal.Easy.CFrame)
-                    task.wait(0.5)
-                end
-                if checkpointStage == tonumber(game.Players.LocalPlayer:GetAttribute("Stage")) + 1 then
-                    game.Players.LocalPlayer.Character:PivotTo(checkpoint.CFrame)
-                    task.wait()
+    if game.Players.LocalPlayer:GetAttribute("Difficulty") then
+        for _, obbySection in ipairs(game:GetService("Workspace").Obbies:GetChildren()) do
+            if game.Players.LocalPlayer:GetAttribute("Difficulty") and (tostring(obbySection:GetAttribute("Difficulty")) == tostring(game.Players.LocalPlayer:GetAttribute("Difficulty"))) then
+                for _, checkpoint in ipairs(obbySection.CheckPoints:GetChildren()) do
+                    print(#obbySection.CheckPoints:GetChildren())
+                    local checkpointStage = tonumber(checkpoint:GetAttribute("Stage"))
+                    
+                    if tonumber(#obbySection.CheckPoints:GetChildren()) == tonumber(game.Players.LocalPlayer:GetAttribute("Stage")) then
+                        game.Players.LocalPlayer.Character:PivotTo(obbySection.LobbyPortal.Easy.CFrame)
+                        task.wait(0.5)
+                    end
+                    if checkpointStage == tonumber(game.Players.LocalPlayer:GetAttribute("Stage")) + 1 then
+                        game.Players.LocalPlayer.Character:PivotTo(checkpoint.CFrame)
+                        task.wait()
+                    end
                 end
             end
+        end
+    else
+        if shared.autoNullify then
+            game.Players.LocalPlayer.Character:PivotTo(game:GetService("Workspace").CubeIsland.Portals.NULLIFYING:GetPivot())
         end
     end
 end
