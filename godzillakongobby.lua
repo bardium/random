@@ -17,12 +17,23 @@ repeat task.wait() until localPlayer.Character ~= nil
 
 local rootPart = localPlayer.Character:WaitForChild("HumanoidRootPart")
 
+if #itemPickups:GetChildren() < 0 then
+	repeat task.wait() until #itemPickups:GetChildren() > 0
+end
+
 while task.wait() do
+	local pickups = {}
 	for _, instance in itemPickups:GetChildren() do
-		rootPart.CFrame = instance:GetPivot()
-		task.wait()
+		if instance:IsA("PVInstance") and string.find(instance.Name, "IP_") then
+			table.insert(pickups, instance)
+		end
 	end
-	if #itemPickups:GetChildren() < 0 then
+	if #pickups > 0 then
+		for _, pickup in pickups do
+			rootPart.CFrame = pickup:GetPivot()
+			task.wait()
+		end
+	else
 		local queueonteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 		if queueonteleport then
 			queueonteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/bardium/random/main/godzillakongobby.lua'))()")
