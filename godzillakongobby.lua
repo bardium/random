@@ -49,9 +49,6 @@ while task.wait() do
 	end)
 	if #pickups > 0 then
 		for _, pickup in pickups do
-			if Workspace.CurrentCamera.CameraType ~= Enum.CameraType.Scriptable then
-				repeat task.wait() until Workspace.CurrentCamera.CameraType ~= Enum.CameraType.Scriptable
-			end
 			rootPart.CFrame = pickup:GetPivot()
 			task.wait()
 		end
