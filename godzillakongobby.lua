@@ -1,3 +1,5 @@
+-- Enable Auto Execute for Auto Rejoin
+
 if not game:IsLoaded() then
 	game.Loaded:Wait()
 end
@@ -52,7 +54,7 @@ while task.wait() do
 		end
 	else
 		if queueonteleport then
-			queueonteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/bardium/random/main/godzillakongobby.lua'))()")
+			--queueonteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/bardium/random/main/godzillakongobby.lua'))()")
 		end
 		if httprequest and not teleporting then
 			local servers = {}
