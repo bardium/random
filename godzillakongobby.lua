@@ -20,6 +20,7 @@ local rootPart = localPlayer.Character:WaitForChild("HumanoidRootPart")
 while task.wait() do
 	for _, instance in itemPickups:GetChildren() do
 		rootPart.CFrame = instance:GetPivot()
+		task.wait()
 	end
 	if #itemPickups:GetChildren() < 0 then
 		local queueonteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
