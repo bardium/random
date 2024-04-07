@@ -31,21 +31,20 @@ local queueonteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or 
 
 local teleporting = false
 
-repeat
-	task.wait()
-until localPlayer.Character ~= nil
-
-local rootPart = localPlayer.Character:WaitForChild("HumanoidRootPart")
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
 
 rootPart.CFrame = cube.CFrame
 
-local eeeeattempts = 0
+local cameraAttempts = 0
 repeat
-	task.wait()
-until Workspace.CurrentCamera.CameraType == Enum.CameraType.Scriptable or eeeeattempts > 50
+	task.wait(0.1)
+	cameraAttempts += 1
+until Workspace.CurrentCamera.CameraType == Enum.CameraType.Scriptable or cameraAttempts > 50
 repeat
-	task.wait()
-until Workspace.CurrentCamera.CameraType ~= Enum.CameraType.Scriptable or eeeeattempts > 100
+	task.wait(0.1)
+	cameraAttempts += 1
+until Workspace.CurrentCamera.CameraType ~= Enum.CameraType.Scriptable or cameraAttempts > 100
 
 task.wait(1)
 
@@ -87,41 +86,6 @@ local function rejoin()
 	end
 end
 
-local excludedCheckpoints = {}
-
-local function tryCheckpoint()
-	local checkpointParts = {}
-	for _, x in Workspace:GetDescendants() do
-		if x.Name == "SC_Checkpoint" and x.Parent:IsA("BasePart") and not table.find(excludedCheckpoints, x.Parent) then
-			table.insert(checkpointParts, x.Parent)
-		end
-	end
-
-	local closetCheckpoint = nil
-	for _, x in checkpointParts do
-		if closetCheckpoint then
-			local distanceFromX = (rootPart.Position - x.Position).Magnitude
-			local distanceFromClosestCheckpoint = (rootPart.Position - closetCheckpoint.Position).Magnitude
-			if distanceFromX < distanceFromClosestCheckpoint then
-				closetCheckpoint = x
-			end
-		else
-			closetCheckpoint = x
-		end
-	end
-	if closetCheckpoint then
-		timesFailed += 1
-		for i = 0, 3 do
-			rootPart.CFrame = CFrame.new(closetCheckpoint.Position) * CFrame.new(0, 4, 0)
-			task.wait(1)
-		end
-		table.insert(excludedCheckpoints, closetCheckpoint)
-	else
-		warn("Checkpoint not found!", #checkpointParts)
-	end
-	oldAmount -= 1
-end
-
 while task.wait() do
 	local pickups = {}
 	for _, instance in itemPickups:GetChildren() do
@@ -148,9 +112,6 @@ while task.wait() do
 			oldAmount = tonumber(currencyLabel.Text)
 		end
 	else
-		rejoin()
-	end
-	if attempts > 10 then
 		rejoin()
 	end
 end
