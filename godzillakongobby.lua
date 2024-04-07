@@ -39,12 +39,13 @@ local rootPart = localPlayer.Character:WaitForChild("HumanoidRootPart")
 
 rootPart.CFrame = cube.CFrame
 
+local eeeeattempts = 0
 repeat
 	task.wait()
-until Workspace.CurrentCamera.CameraType == Enum.CameraType.Scriptable
+until Workspace.CurrentCamera.CameraType == Enum.CameraType.Scriptable or eeeeattempts > 50
 repeat
 	task.wait()
-until Workspace.CurrentCamera.CameraType ~= Enum.CameraType.Scriptable
+until Workspace.CurrentCamera.CameraType ~= Enum.CameraType.Scriptable or eeeeattempts > 100
 
 task.wait(1)
 
@@ -86,6 +87,41 @@ local function rejoin()
 	end
 end
 
+local excludedCheckpoints = {}
+
+local function tryCheckpoint()
+	local checkpointParts = {}
+	for _, x in Workspace:GetDescendants() do
+		if x.Name == "SC_Checkpoint" and x.Parent:IsA("BasePart") and not table.find(excludedCheckpoints, x.Parent) then
+			table.insert(checkpointParts, x.Parent)
+		end
+	end
+
+	local closetCheckpoint = nil
+	for _, x in checkpointParts do
+		if closetCheckpoint then
+			local distanceFromX = (rootPart.Position - x.Position).Magnitude
+			local distanceFromClosestCheckpoint = (rootPart.Position - closetCheckpoint.Position).Magnitude
+			if distanceFromX < distanceFromClosestCheckpoint then
+				closetCheckpoint = x
+			end
+		else
+			closetCheckpoint = x
+		end
+	end
+	if closetCheckpoint then
+		timesFailed += 1
+		for i = 0, 3 do
+			rootPart.CFrame = CFrame.new(closetCheckpoint.Position) * CFrame.new(0, 4, 0)
+			task.wait(1)
+		end
+		table.insert(excludedCheckpoints, closetCheckpoint)
+	else
+		warn("Checkpoint not found!", #checkpointParts)
+	end
+	oldAmount -= 1
+end
+
 while task.wait() do
 	local pickups = {}
 	for _, instance in itemPickups:GetChildren() do
@@ -112,6 +148,9 @@ while task.wait() do
 			oldAmount = tonumber(currencyLabel.Text)
 		end
 	else
+		rejoin()
+	end
+	if attempts > 10 then
 		rejoin()
 	end
 end
